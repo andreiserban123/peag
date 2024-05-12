@@ -181,27 +181,21 @@ def GA(dim, NMAX, pc, pm):
         pop_urmatoare = elitism(pop_initiala, pop_copii_mutanti, dim, n)
         minim = numpy.min(pop_urmatoare[:, -1])
         maxim = numpy.max(pop_urmatoare[:, -1])
-        # daca cel mai bun individ de acum e egal cu ultimul adaugat in lista cu cei mai buni
         if maxim == istoric_v[it]:
-            nrm = nrm + 1  # inseamna ca nu s-a imbunatatit in generatia curenta, incrementam nr de iteratii consecutive fara imbunatatire
+            nrm = nrm + 1
         else:
-            nrm = 0  # la orice imbunatatire resetam contorul la zero
+            nrm = 0
 
-        # daca max=min (adica toti indivizii sunt identici calitativ) sau daca in ultimele nmax/4 iteratii consecutive nu s-a imbunatatit calitatea
         if maxim == minim or nrm == int(NMAX / 4):
-            gata = True  # opresc algoritmul la aceasta generatie
+            gata = True
         else:
-            it = it + 1  # altfel, incrementez contorul de generatii pentru ca voi trece la urmatoarea daca nu am ajuns la ultima
+            it = it + 1
 
         # salvez cel mai bun individ in istoric
         istoric_v.append(numpy.max(pop_urmatoare[:, -1]))
 
-        # initializez populatia initiala de la urmatorul pas cu populatia urmatoare de la generatia curenta (gene si fitness)
-        pop_initiala_gene = pop_urmatoare.copy()
-        # de aici algoritmul se reia de sus, de la while, pentru (eventuala) urmatoare generatie
+        pop_initiala = pop_urmatoare.copy()
 
-        # la acest moment s-a iesit din while, deci algoritmul a luat sfarsit, ramane sa procesam datele obtinute
-        # transformarea din lista in vector pentru a aplica functia where corect
     poz_max = numpy.where(pop_urmatoare[:, -1] == maxim)
     individ_max_gene = pop_urmatoare[poz_max[0][0], 0:n]
     individ_max_fitness = maxim
