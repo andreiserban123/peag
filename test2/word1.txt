@@ -1,0 +1,25 @@
+ 1.  Reprezentarea individului:
+    Un individ este reprezentat printr-o permutare de la 0 la N-1 care reprezinta fiecare reprezentant la o masa rotunda
+
+ 2. Functia de fitness:
+    functia de fitness verifica fiecare gena cu urmatoare utilizand matricea binara a conflictelor. La final verifica si ultimul cu primul reprezentant sa vada daca exista conflict intre cele 2 state. Fiind o problema de maximizare fitness-ul returneaza 1/(1+ suma).
+ 3. Populatia initiala:
+    Vom alege o populatie de 100 de indivizi
+    Fiecare individ va avea atasat la sfarsitul fiecarei gene fitness-ul calculat mai sus
+
+ 4. Selectia parintilor:
+    Aplicam selectia parintilor prin metoda Ruletei
+
+ 6. Crossover:
+    Aplicam incrucisarea PMX  cu o probabilitate de 0.8 mai apoi adaugam genelor fitnessul si le adaugam in pop de copii.
+7. Mutatii:
+    Aplicam mutatia permutarilor prin interschimbare recalculam fitness-ul ca mai apoi sa adaugam individul in populaita de copii mutanti.
+
+ 8. Selectia generatiei urmatoare:
+    Folosim o selectie elitista
+    Daca cel mai bun copil este mai slab fata de cel mai bun parinte, atunci parintele il inlocuieste in populatia generatiei urmatoare
+
+ 9. Conditii de oprire:
+    Atingerea unui numar de 100 de generatii.
+    Neimbunatatirea celui mai bun individ timp de 25 generatii.
+    Toti indivizii sunt indentici

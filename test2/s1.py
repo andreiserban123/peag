@@ -9,6 +9,7 @@ def ok(x, conflicte):
     f = 0
     for i in range(len(x) - 1):
         f += conflicte[x[i]][x[i + 1]]
+    f+=conflicte[x[0]][x[len(x)-1]]
     return 1 / (f + 1)
 
 
@@ -203,6 +204,6 @@ def GA(dim, NMAX, pc, pm):
 
 
 if __name__ == "__main__":
-    individ_max_gene, individ_max_fitness = GA(10, 10, 0.8, 0.1)
+    individ_max_gene, individ_max_fitness = GA(10, 100, 0.8, 0.1)
     print(numpy.asarray(individ_max_gene))
     print(individ_max_fitness)
