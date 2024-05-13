@@ -1,0 +1,70 @@
+
+Cerința:
+Un produs P este obținut în două fabrici situate în București și Craiova și este stocat pentru desfacere în trei depozite: Ploiești, Pitești și Cluj. Fabrica din București poate produce săptămânal 120 de tone din produsul P, iar fabrica din Craiova poate produce 140 de tone pe săptămână. Necesitatea săptămânală este: Ploiești 100 de tone, Pitești 60 de tone, Cluj 80 de tone. Costurile de transport pe tonă sunt prezentate în tabel.
+
+Tabelul costurilor de transport:
+Ploiești	Pitești	Cluj
+București	50	70	90
+Craiova	    60	70	100
+
+Reprezentarea Soluțiilor:
+    Un candidat la soluție este un vector X de lungime 6, unde fiecare element reprezintă numărul de tone transportate:
+
+    X = [X_BP, X_BPi, X_BC, X_CP, X_CPi, X_CC]
+    unde:
+
+    X_BP este cantitatea transportată de la București la Ploiești
+    X_BPi este cantitatea transportată de la București la Pitești
+    X_BC este cantitatea transportată de la București la Cluj
+    X_CP este cantitatea transportată de la Craiova la Ploiești
+    X_CPi este cantitatea transportată de la Craiova la Pitești
+    X_CC este cantitatea transportată de la Craiova la Cluj
+
+Funcția Fitness/Calitatea unui Individ:
+    Calitatea individului este determinată de costul total de transport.
+
+    Costul total de transport:
+
+    Cost total = suma X[i] * C[i]
+    unde C este vectorul costurilor de transport:
+
+    C = [50, 70, 90, 60, 70, 100]
+
+Constrângeri:
+    Suma cantităților trimise de fiecare fabrică nu trebuie să depășească capacitatea de producție:
+
+    X_BP + X_BPi + X_BC <= 120 (pentru București)
+    X_CP + X_CPi + X_CC <= 140 (pentru Craiova)
+    Suma cantităților primite de fiecare depozit trebuie să fie egală cu necesarul săptămânal:
+
+    X_BP + X_CP = 100 (pentru Ploiești)
+    X_BPi + X_CPi = 60 (pentru Pitești)
+    X_BC + X_CC = 80 (pentru Cluj)
+
+
+Populația Inițială:
+    Vom genera o populație de dimensiune constantă în timp, cu indivizi care respectă constrângerile impuse.
+
+Operatorii de Variație:
+Recombinare:
+
+    Vom folosi recombinare uniformă pentru generarea de noi soluții, cu probabilitatea de recombinare pc = 0.8.
+Mutație:
+
+    Vom folosi mutația prin ajustarea aleatorie a cantităților transportate, cu probabilitatea de mutație pm = 0.2.
+Selecția Părinților și a Generației Următoare:
+Selecția Părinților:
+
+Folosim mecanismul SUS (Stochastic Universal Sampling) cu distribuție de probabilitate FPS (Fitness Proportionate Selection).
+Selecția Generației Următoare:
+
+Model generațional cu elitism.
+Condiția de Terminare și Soluția:
+Algoritmul se finalizează dacă:
+
+S-au realizat NMAX iterații.
+Variabilitatea populației este 0 (toți indivizii au aceeași calitate).
+A fost generat un individ care respectă toate constrângerile și are fitness maxim.
+Soluția problemei va fi dată de individul cu cea mai bună calitate din ultima generație.
+
+
