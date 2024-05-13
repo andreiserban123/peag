@@ -1,159 +1,132 @@
 import numpy as np
 
-greutati = np.genfromtxt("container_weights.txt", dtype=int)
+# Hardcodarea maselor containerelor
+def citeste_mase():
+    mase = [120, 150, 200, 100, 180, 140, 130, 170, 160, 190, 210, 125, 135, 145, 155]
+    return mase
 
+# Definirea funcțiilor de fitness și de verificare a fezabilității
+def calculeaza_mase_vagoane(allocation, mase, n):
+    mase_vagoane = [0] * n
+    for i in range(len(allocation)):
+        mase_vagoane[int(allocation[i])] += mase[i]
+    return mase_vagoane
 
-def ok(x, greutati, n):
-    x = list(x)
-    g = np.zeros(n)
-    for i in range(n):
-        for j in range(len(x)):
-            if x[j] == i:
-                g[i] += greutati[j]
+def fitness(allocation, mase, n):
+    mase_vagoane = calculeaza_mase_vagoane(allocation, mase, n)
+    return 1 / (1 + (max(mase_vagoane) - min(mase_vagoane)))
 
-    dev = np.std(g)
-    return 1 / (dev + 1)
-
-
-def crossover_unipunct(x1, x2, n):
-    p = np.random.randint(0, n)
-    c1 = x1.copy()
-    c2 = x2.copy()
-    c1[0:p] = x1[0:p]
-    c1[p:] = x2[p:n]
-    c2[0:p] = x2[0:p]
-    c2[p:n] = x1[p:n]
-    return c1, c2
-
-
-def gen(dim, n):
+########################## GENERAREA UNEI POPULATII ########################
+def gen_populatie(dim, mase, n):
     pop = []
+    m = len(mase)
+    for _ in range(dim):
+        allocation = np.random.randint(0, n, m).tolist()
+        pop.append(allocation + [fitness(allocation, mase, n)])
+    return np.array(pop)
 
-    m = len(greutati)
-    for i in range(dim):
-        x = np.random.randint(0, n, m)
-        fitness = ok(x, greutati, n)
-        x = list(x)
-        x.append(fitness)
-        pop.append(x)
-    return pop
+########################### OPERATOR MUTATIE #########################
+def mutatie(allocation, n):
+    m = len(allocation)
+    container_idx = np.random.randint(0, m)
+    new_vagon = np.random.randint(0, n)
+    allocation[container_idx] = new_vagon
+    return allocation
 
-
-def crossover_populatie(pop, dim, n, probabilitate_crossover):
-    copii = pop.copy()
-    copii = list(copii)
-    for i in range(0, dim - 1, 2):
-        # selecteaza parintii
-        x1 = pop[i][0:n].copy()
-        x2 = pop[i + 1][0:n].copy()
-        r = np.random.uniform(0, 1)
-        if r <= probabilitate_crossover:
-            c1, c2 = crossover_unipunct(x1, x2, n)
-            fitness = ok(c1, greutati, n)
-            c1 = list(c1)
-            c1 = c1 + [fitness]
-            copii[i] = c1.copy()
-            fitness = ok(c2, greutati, n)
-            c2 = list(c2)
-            c2 = c2 + [fitness]
-            copii[i + 1] = c2.copy()
-    return copii
-
-
-def m_uniforma(x, n):
-    gena = np.random.randint(0, n)
-    x[gena] = np.random.randint(0, n)
-    return x
-
-
-def mutatie_populatie(pop, dim, n, probabilitate_mutatie):
-    pop = np.asarray(pop)
+def mutatie_populatie(pop, mase, n, probabilitate_m):
     pop_m = pop.copy()
-    for i in range(dim):
-        x = pop[i][:n].copy()
-        r = np.random.uniform(0, 1)
-        if r <= probabilitate_mutatie:
-            x = m_uniforma(x, n)
-            val = ok(x, greutati, n)
-            x = list(x)
-            x = x + [val]
-            pop_m[i] = x.copy
+    for i in range(len(pop)):
+        if np.random.uniform(0, 1) <= probabilitate_m:
+            nou = mutatie(pop[i][:len(mase)].copy(), n)
+            pop_m[i][:len(mase)] = nou
+            pop_m[i][-1] = fitness(nou, mase, n)
     return pop_m
 
+########################## OPERATOR RECOMBINARE ########################
+def recombinare_uniforma(x1, x2):
+    m = len(x1)
+    child = [x1[i] if np.random.uniform(0, 1) > 0.5 else x2[i] for i in range(m)]
+    return child
 
-def turnir(pop, k):
-    pop_turnir = []
-    for i in range(k):
-        index = np.random.randint(0, len(pop))
-        pop_turnir.append(pop[index])
-    fitnesses = []
-    for i in range(k):
-        fitnesses.append(pop_turnir[i][-1])
-    index_castigator = np.argmax(fitnesses)
-    return pop_turnir[index_castigator]
+def recombinare_populatie(pop, mase, n, probabilitate_crossover):
+    copii = pop.copy()
+    for i in range(0, len(pop) - 1, 2):
+        if np.random.uniform(0, 1) <= probabilitate_crossover:
+            c1 = recombinare_uniforma(pop[i][:len(mase)], pop[i+1][:len(mase)])
+            c2 = recombinare_uniforma(pop[i+1][:len(mase)], pop[i][:len(mase)])
+            copii[i][:len(mase)] = c1
+            copii[i][-1] = fitness(c1, mase, n)
+            copii[i+1][:len(mase)] = c2
+            copii[i+1][-1] = fitness(c2, mase, n)
+    return copii
 
+########################## SELECTIE PARENTI SUS ########################
+def fps(fitnessuri):
+    suma = np.sum(fitnessuri)
+    fps = fitnessuri / suma
+    qfps = np.cumsum(fps)
+    return qfps
 
-def selectia_parintilor(pop, k):
-    pop_parinti = []
-    for i in range(len(pop)):
-        indiv_castigator = turnir(pop, k)
-        pop_parinti.append(indiv_castigator)
-    return pop_parinti
+def ruleta(pop_initiala):
+    dim = len(pop_initiala)
+    m = len(pop_initiala[0]) - 1
+    fitnessuri = pop_initiala[:, -1]
+    qfps = fps(fitnessuri)
+    parinti = pop_initiala.copy()
+    for i in range(dim):
+        r = np.random.uniform(0, 1)
+        pozitie = np.where(qfps >= r)[0][0]
+        parinti[i][:m] = pop_initiala[pozitie][:m]
+        parinti[i][m] = fitnessuri[pozitie]
+    return parinti
 
-
-def elitism(pop_curenta, pop_mutanta, dim, n):
-    pop_curenta = np.asarray(pop_curenta)
-    pop_mutanta = np.asarray(pop_mutanta)
-    pop_urmatoare = np.copy(pop_mutanta)
+########################## ELITISM ########################
+def elitism(pop_curenta, pop_mutanta):
+    dim = len(pop_curenta)
+    pop_urmatoare = pop_mutanta.copy()
     max_curent = np.max(pop_curenta[:, -1])
     max_mutant = np.max(pop_mutanta[:, -1])
     if max_curent > max_mutant:
-        poz = np.where(pop_curenta[:, -1] == max_curent)
-        imax = poz[0][0]
+        poz = np.where(pop_curenta[:, -1] == max_curent)[0][0]
         ir = np.random.randint(dim)
-        pop_urmatoare[ir, 0:n] = pop_curenta[imax, 0:n].copy()
-        pop_urmatoare[ir, n] = max_curent
+        pop_urmatoare[ir] = pop_curenta[poz]
     return pop_urmatoare
 
-
-def GA(dim, n, NMAX, pc, pm):
-    pop_initiala = gen(dim, n)
-    pop_initiala = np.asarray(pop_initiala)
+##################################### APLICARE GA FINAL ###################################
+def GA(dim, NMAX, pc, pm, n):
+    mase = citeste_mase()
+    pop_initiala = gen_populatie(dim, mase, n)
     istoric_v = [np.max(pop_initiala[:, -1])]
     it = 0
     gata = False
     nrm = 1
+
     while it < NMAX and not gata:
-        parinti = selectia_parintilor(pop_initiala, 8)
-        parinti = np.asarray(parinti)
-        pop_copii = crossover_populatie(parinti, dim, n, pc)
-        pop_copii_mutanti = mutatie_populatie(pop_copii, dim, n, pm)
-        pop_urmatoare = elitism(pop_initiala, pop_copii_mutanti, dim, n)
+        parinti = ruleta(pop_initiala)
+        pop_copii = recombinare_populatie(parinti, mase, n, pc)
+        pop_copii_mutanti = mutatie_populatie(pop_copii, mase, n, pm)
+        pop_urmatoare = elitism(pop_initiala, pop_copii_mutanti)
         minim = np.min(pop_urmatoare[:, -1])
         maxim = np.max(pop_urmatoare[:, -1])
         if maxim == istoric_v[it]:
-            nrm = nrm + 1
+            nrm += 1
         else:
             nrm = 0
         if maxim == minim or nrm == int(NMAX / 4):
             gata = True
         else:
-            it = it + 1
-        istoric_v.append(maxim)
+            it += 1
+        istoric_v.append(np.max(pop_urmatoare[:, -1]))
         pop_initiala = pop_urmatoare.copy()
-    poz_max = np.where(pop_urmatoare[:, -1] == maxim)
-    individ_max = pop_urmatoare[poz_max[0][0], 0:]
-    fitness_max = maxim
-    return np.asarray(individ_max), fitness_max
 
+    poz_max = np.where(pop_urmatoare[:, -1] == maxim)[0][0]
+    individ_max_gene = pop_urmatoare[poz_max][:len(mase)]
+    individ_max_fitness = maxim
 
-# Setările pentru GA
-dim = 100  # Dimensiunea populației
-n = 5  # Numărul de insule (sau vagoane)
-NMAX = 50  # Numărul maxim de generații
-pc = 0.8  # Probabilitatea de crossover
-pm = 0.1  # Probabilitatea de mutație
+    return np.asarray(individ_max_gene), individ_max_fitness
 
-best_solution, fit = GA(dim, n, NMAX, pc, pm)
-print("Best solution found:", best_solution)
-print("Best fitness:", fit)
+######################################## RULARE ##############################################
+if __name__ == "__main__":
+    individ_max_gene, individ_max_fitness = GA(100, 200, 0.8, 0.2, 10)
+    print("Gene: ", individ_max_gene)
+    print("Fitness: ", individ_max_fitness)

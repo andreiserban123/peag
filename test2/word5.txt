@@ -1,0 +1,38 @@
+Cerința:
+Trenul umanitar cu n vagoane trebuie să aprovizioneze n zone defavorizate cu produse de bază. Materialele sunt ambalate în m containere speciale, fiecare cu o masă totală cunoscută. Scopul este să alocăm containerele în vagoane astfel încât masele totale ale vagoanelor să fie cât mai apropiate.
+
+Reprezentarea Soluțiilor:
+Un candidat la soluție este un vector de lungime m, unde fiecare element reprezintă alocarea unui container într-un vagon specific. Fiecare element din vector va avea o valoare între 0 și n-1, reprezentând indicele vagonului în care este alocat containerul.
+
+Funcția Fitness/Calitatea unui Individ:
+Calitatea individului este determinată în funcție de diferența dintre masele totale ale vagoanelor. Scopul este de a minimiza diferențele dintre masele totale.
+
+Masa totală a vagonului i:
+M_i = suma container_j daca allocation_j = i
+
+Diferența maximă a masei:
+max(M) - min(M), unde M este vectorul maselor totale ale vagoanelor.
+
+Funcția fitness:
+fitness(x) = 1 / (1 + (max(M) - min(M)))
+
+Populația Inițială:
+Vom genera o populație de dimensiune constantă în timp, cu indivizi care respectă constrângerile impuse.
+
+Operatorii de Variație:
+Recombinare:
+Vom folosi recombinare uniformă pentru generarea de noi soluții, cu probabilitatea de recombinare pc = 0.8.
+Mutație:
+Vom folosi mutația prin schimbarea alocării aleatorii a unui container, cu probabilitatea de mutație pm = 0.2.
+Selecția Părinților și a Generației Următoare:
+Selecția Părinților:
+Folosim mecanismul SUS (Stochastic Universal Sampling) cu distribuție de probabilitate FPS (Fitness Proportionate Selection).
+Selecția Generației Următoare:
+Model generațional cu elitism.
+Condiția de Terminare și Soluția:
+Algoritmul se finalizează dacă:
+
+S-au realizat NMAX iterații.
+Variabilitatea populației este 0 (toți indivizii au aceeași calitate).
+A fost generat un individ care respectă toate constrângerile și are fitness maxim.
+Soluția problemei va fi dată de individul cu cea mai bună calitate din ultima generație.
