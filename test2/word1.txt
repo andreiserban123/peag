@@ -1,25 +1,35 @@
- 1.  Reprezentarea individului:
-    Un individ este reprezentat printr-o permutare de la 0 la N-1 care reprezinta fiecare reprezentant la o masa rotunda
+1. Cerința:
+	*	Trebuie sa gasim o modalitate de asezare a delegatilor fiecarui oras.
+	*	Date de intrare: matricea-conflict, patratica, cu valori de 1 si 0 care este simetrica fata de diagonala principala
+	*	Problema presupune găsirea unei ordini de asezare la o mas rotunda, astfel incat sa nu avem conflicte (sau cat mi putine intre un delegat si vecinii sai la masa)
+	*	Problema este cu dependență de adiacență
+2. Reprezentarea solutiilor:
+	* Un candidate la solutie este o permutare de n , unde n = nr de delagia
+	* problema este fara constrangeri
+	* dimensiunea spatiilor solutiilor :n!
+3. Functia fintess/calitatea unui individ
+	* Calitatea individului va fi determinata in functie de numarul de conflicte pe care il determina, fiind urmarita minimizarea acestui numar  nr_conflicte(x) = mat_conflicte[x[i]][x[i+1]]
+	* Cum aceasta este o functie ce trebuie minimizata, functia fitness a individului va fi: 1/(1+nr_conflicte(x))
+4. Populatia intiala:
+	* Vom folosi modelul generational: generam dim indivizi si selectam tot dim parinti
+	* Populatia va avea dimensiune constanta in timp
+	* Populatia initiala se genereaza ca matrice de permutari de n aleatoare
+5. Operatorii de variatie:
+	A. RECOMBINARE
+		* Folosim schema generala de recombinare pentru probleme fara restrictii, cu prop de recombinare pc= 0.8
+		* Reprezentarea prin permutari cu dependenta de adiacenta, deci folosim PMX(Partially Mapped Crossover)
+		* Modelul generational: se ia in calcul si recombinarea asexuata
+	B. MUTATIE
+		* Folosim schema generala de mutatie pentru probleme fara constrangeri cu prob de mutatie PM = 0.2
+		* dependenta de adiacenta => folosim mutatia prin inversiune
+6.	Selectia parintilor si a generatiei urmatoare
+	*	Selectia parintilor: pentru ca folosim modelul generational, vom selecta dim parinti 
+	*	Cum functia fitness ia valori strict pozitive, vom folosi mecanimsul SUS cu distributie de probabilitate FPS cu sigma-scalare
+	*	Selectia generației următoare: model generațional => elitism
 
- 2. Functia de fitness:
-    functia de fitness verifica fiecare gena cu urmatoare utilizand matricea binara a conflictelor. La final verifica si ultimul cu primul reprezentant sa vada daca exista conflict intre cele 2 state. Fiind o problema de maximizare fitness-ul returneaza 1/(1+ suma).
- 3. Populatia initiala:
-    Vom alege o populatie de 100 de indivizi
-    Fiecare individ va avea atasat la sfarsitul fiecarei gene fitness-ul calculat mai sus
-
- 4. Selectia parintilor:
-    Aplicam selectia parintilor prin metoda Ruletei
-
- 6. Crossover:
-    Aplicam incrucisarea PMX  cu o probabilitate de 0.8 mai apoi adaugam genelor fitnessul si le adaugam in pop de copii.
-7. Mutatii:
-    Aplicam mutatia permutarilor prin interschimbare recalculam fitness-ul ca mai apoi sa adaugam individul in populaita de copii mutanti.
-
- 8. Selectia generatiei urmatoare:
-    Folosim o selectie elitista
-    Daca cel mai bun copil este mai slab fata de cel mai bun parinte, atunci parintele il inlocuieste in populatia generatiei urmatoare
-
- 9. Conditii de oprire:
-    Atingerea unui numar de 100 de generatii.
-    Neimbunatatirea celui mai bun individ timp de 25 generatii.
-    Toti indivizii sunt indentici
+7.	Condiția de terminare & soluția
+	*	Algoritmul se finalizează dacă:
+	*	S-au realizat NMAX iterații SAU
+	*	Variabilitatea populației este 0 (toți indivizii au aceeași calitate) SAU
+	*	A fost generat un individ cu fitness maxim =1
+	*	Soluția problemei va fi dată de individul cu cea mai bună calitate din ultima generație.

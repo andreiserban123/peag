@@ -1,3 +1,49 @@
+### Cerința:
+Studentul trebuie să aleagă o combinație de cursuri astfel încât:
+- Să nu depășească bugetul de 10.000 lei.
+- Numărul mediu de credite să fie cât mai mare.
+- Timpul mediu de studiu individual să nu depășească 70 de ore.
+
+### Reprezentarea Soluțiilor:
+Un candidat la soluție este un vector [a, b, c], unde a, b și c sunt numărul de cursuri de tip a, b și c, respectiv. Problema are constrângeri de buget și timp de studiu.
+
+### Funcția Fitness/Calitatea unui Individ:
+Calitatea individului este determinată în funcție de numărul mediu de credite obținute:
+- Credite medii: (5a + 3b + 8c) / (a + b + c)
+- Ore de studiu medii: (80a + 40b + 100c) / (a + b + c)
+
+Funcția fitness:
+fitness(x) = (5a + 3b + 8c) / (a + b + c)
+unde x = [a, b, c].
+
+### Populația Inițială:
+Vom genera o populație de dimensiune constantă în timp, cu indivizi care respectă constrângerile impuse.
+
+### Operatorii de Variație:
+1. Recombinare:
+   - Vom folosi recombinare uniformă pentru generarea de noi soluții, cu probabilitatea de recombinare pc = 0.8.
+
+2. Mutație:
+   - Vom folosi mutația prin adăugarea sau scăderea aleatorie a unui număr mic de cursuri, cu probabilitatea de mutație pm = 0.2.
+
+### Selecția Părinților și a Generației Următoare:
+1. Selecția Părinților:
+   - Folosim mecanismul SUS (Stochastic Universal Sampling) cu distribuție de probabilitate FPS (Fitness Proportionate Selection).
+
+2. Selecția Generației Următoare:
+   - Model generațional cu elitism.
+
+### Condiția de Terminare și Soluția:
+Algoritmul se finalizează dacă:
+1. S-au realizat NMAX iterații.
+2. Variabilitatea populației este 0 (toți indivizii au aceeași calitate).
+3. A fost generat un individ care respectă toate constrângerile și are fitness maxim.
+
+Soluția problemei va fi dată de individul cu cea mai bună calitate din ultima generație.
+
+### Implementare
+
+```python
 import numpy as np
 
 # Definirea costurilor și a caracteristicilor cursurilor
@@ -139,7 +185,9 @@ def GA(dim, NMAX, pc, pm):
         minim = np.min(pop_urmatoare[:, -1])
         maxim = np.max(pop_urmatoare[:, -1])
         if maxim == istoric_v[it]:
-            nrm += 1
+            nrm +=
+
+ 1
         else:
             nrm = 0
         if maxim == minim or nrm == int(NMAX / 4):
@@ -160,3 +208,5 @@ if __name__ == "__main__":
     individ_max_gene, individ_max_fitness = GA(100, 200, 0.8, 0.2)
     print("Gene: ", individ_max_gene)
     print("Fitness: ", individ_max_fitness)
+```
+

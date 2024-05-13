@@ -1,0 +1,41 @@
+Cerința:
+Compania aeriană dorește să achiziționeze 3 tipuri de aeronave, având un buget de 5.000 de unități. Trebuie să determine câte aeronave din fiecare tip trebuie cumpărate astfel încât:
+să nu fie depășit bugetul disponibil;
+autonomia medie să fie maximă;
+valoarea medie a razei de detecție TCAS să fie cel puțin 40 km.
+Reprezentarea Soluțiilor:
+Un candidat la soluție este un vector [a, b, c], unde a, b, și c sunt numărul de aeronave din fiecare tip. Problema are constrângeri de buget și detecție TCAS.
+
+Funcția Fitness/Calitatea unui Individ:
+Calitatea individului este determinată în funcție de autonomia medie a flotei. În plus, trebuie să respectăm constrângerile de buget și detecție TCAS:
+
+Autonomia medie: autonomie_medie(x) = (6000 * a + 4200 * b + 2800 * c) / (a + b + c)
+Raza de detecție TCAS medie: detectie_medie(x) = (30 * a + 48 * b + 32 * c) / (a + b + c)
+Funcția fitness:
+fitness(x) = autonomie_medie(x)
+unde x = [a, b, c].
+
+Populația Inițială:
+Vom genera o populație de dimensiune constantă în timp, cu indivizi care respectă constrângerile impuse.
+
+Operatorii de Variație:
+Recombinare:
+
+Vom folosi recombinare uniformă pentru generarea de noi soluții, cu probabilitatea de recombinare p_c = 0.8.
+Mutație:
+
+Vom folosi mutația prin adăugarea sau scăderea aleatorie a unui număr mic de aeronave, cu probabilitatea de mutație p_m = 0.2.
+Selecția Părinților și a Generației Următoare:
+Selecția Părinților:
+
+Folosim mecanismul SUS (Stochastic Universal Sampling) cu distribuție de probabilitate FPS (Fitness Proportionate Selection).
+Selecția Generației Următoare:
+
+Model generațional cu elitism.
+Condiția de Terminare și Soluția:
+Algoritmul se finalizează dacă:
+
+S-au realizat N_MAX iterații.
+Variabilitatea populației este 0 (toți indivizii au aceeași calitate).
+A fost generat un individ care respectă toate constrângerile și are fitness maxim.
+Soluția problemei va fi dată de individul cu cea mai bună calitate din ultima generație.
