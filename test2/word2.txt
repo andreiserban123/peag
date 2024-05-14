@@ -1,41 +1,45 @@
-Cerința:
-Compania aeriană dorește să achiziționeze 3 tipuri de aeronave, având un buget de 5.000 de unități. Trebuie să determine câte aeronave din fiecare tip trebuie cumpărate astfel încât:
-să nu fie depășit bugetul disponibil;
-autonomia medie să fie maximă;
-valoarea medie a razei de detecție TCAS să fie cel puțin 40 km.
-Reprezentarea Soluțiilor:
-Un candidat la soluție este un vector [a, b, c], unde a, b, și c sunt numărul de aeronave din fiecare tip. Problema are constrângeri de buget și detecție TCAS.
+1. Cerința
+   O companie aeriană dorește să achiziționeze 3 tipuri de aeronave, având un buget de achiziții de 5.000 de unități. Fiecare tip de avion are următoarele caracteristici:
+   - Tip a: costă 100 de unități, autonomia de 6.000 km și raza de detecție TCAS 30 km
+   - Tip b: costă 60 de unități, autonomia de 4.200 km și raza de detecție TCAS 48 km
+   - Tip c: costă 50 de unități, autonomia de 2.800 km și raza de detecție TCAS 32 km
+   Obiectivul este de a calcula câte aeronave din fiecare tip trebuie cumpărate astfel încât:
+   - să nu fie depășită suma disponibilă
+   - autonomia medie să fie maximă
+   - valoarea medie a razei de detecție TCAS să fie cel puțin 40 km
 
-Funcția Fitness/Calitatea unui Individ:
-Calitatea individului este determinată în funcție de autonomia medie a flotei. În plus, trebuie să respectăm constrângerile de buget și detecție TCAS:
+2. Obiectiv
+   Determinarea numărului de aeronave de fiecare tip care trebuie achiziționate pentru a maximiza autonomia medie, respectând bugetul și asigurându-se că valoarea medie a razei de detecție TCAS este cel puțin 40 km.
 
-Autonomia medie: autonomie_medie(x) = (6000 * a + 4200 * b + 2800 * c) / (a + b + c)
-Raza de detecție TCAS medie: detectie_medie(x) = (30 * a + 48 * b + 32 * c) / (a + b + c)
-Funcția fitness:
-fitness(x) = autonomie_medie(x)
-unde x = [a, b, c].
+3. Reprezentarea Soluțiilor
+   Un candidat la soluție este un vector de lungime 4, unde primele 3 elemente reprezintă numărul de aeronave din fiecare tip, iar ultimul element reprezintă fitness-ul soluției:
+   X = [a, b, c, fitness]
 
-Populația Inițială:
-Vom genera o populație de dimensiune constantă în timp, cu indivizi care respectă constrângerile impuse.
+4. Funcția Fitness
+   Calitatea unui individ este determinată de autonomia medie și de respectarea constrângerilor de buget și de raza medie de detecție TCAS.
+   1. Calculăm costul total al aeronavelor.
+   2. Calculăm autonomia medie.
+   3. Calculăm valoarea medie a razei de detecție TCAS.
+   4. Dacă soluția respectă constrângerile, fitness-ul este autonomia medie; altfel, fitness-ul este penalizat.
 
-Operatorii de Variație:
-Recombinare:
+5. Populația Inițială
+   Generăm o populație de dimensiune constantă dim de vectori aleatori, care reprezintă numărul de aeronave din fiecare tip.
 
-Vom folosi recombinare uniformă pentru generarea de noi soluții, cu probabilitatea de recombinare p_c = 0.8.
-Mutație:
+6. Operatorii de Variație
+   1. Recombinare
+      Vom folosi recombinare uniformă pentru a genera noi soluții, cu probabilitatea de recombinare pc = 0.8.
+   2. Mutație
+      Vom folosi mutația prin schimbarea aleatorie a numărului de aeronave, cu probabilitatea de mutație pm = 0.2.
 
-Vom folosi mutația prin adăugarea sau scăderea aleatorie a unui număr mic de aeronave, cu probabilitatea de mutație p_m = 0.2.
-Selecția Părinților și a Generației Următoare:
-Selecția Părinților:
+7. Selecția Părinților și a Generației Următoare
+   1. Selecția Părinților
+      Folosim mecanismul Stochastic Universal Sampling (SUS) cu distribuție de probabilitate FPS (Fitness Proportionate Selection).
+   2. Selecția Generației Următoare
+      Model generațional cu elitism.
 
-Folosim mecanismul SUS (Stochastic Universal Sampling) cu distribuție de probabilitate FPS (Fitness Proportionate Selection).
-Selecția Generației Următoare:
-
-Model generațional cu elitism.
-Condiția de Terminare și Soluția:
-Algoritmul se finalizează dacă:
-
-S-au realizat N_MAX iterații.
-Variabilitatea populației este 0 (toți indivizii au aceeași calitate).
-A fost generat un individ care respectă toate constrângerile și are fitness maxim.
-Soluția problemei va fi dată de individul cu cea mai bună calitate din ultima generație.
+8. Condiția de Terminare și Soluția
+   Algoritmul se finalizează dacă:
+   1. S-au realizat NMAX iterații.
+   2. Variabilitatea populației este 0 (toți indivizii au aceeași calitate).
+   3. A fost generat un individ care respectă toate constrângerile și are fitness maxim.
+   Soluția problemei va fi dată de individul cu cea mai bună calitate din ultima generație.
