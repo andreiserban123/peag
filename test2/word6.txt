@@ -1,0 +1,39 @@
+Compania minieră spațială MinAstero operează 5 exploatări situate în centura de asteroizi dintre Marte și Jupiter. Compania dispune de n nave de transport de tipuri diferite, fiecare cu o capacitate de transport (masă maximă) cunoscută. Fiecare navă trebuie alocată unei singure exploatări. Scopul este să se aloce navele astfel încât capacitățile totale de transport alocate fiecărei exploatări să fie cât mai apropiate.
+
+Reprezentarea Soluțiilor
+Un candidat la soluție este un vector de lungime n+1, unde primele n elemente reprezintă alocarea navelor la exploatări, iar ultimul element reprezintă fitness-ul soluției:
+
+X=[x1,x2,...,xn,fitness]
+  reprezintă exploatarea (0, 1, 2, 3, 4) la care este alocată nava i.
+Funcția Fitness/Calitatea unui Individ
+Calitatea unui individ este determinată de diferența dintre capacitățile totale de transport alocate fiecărei exploatări. Obiectivul este să minimizăm aceste diferențe pentru a obține o alocare echilibrată.
+
+Formula pentru fitness:
+
+Calculăm capacitățile totale de transport pentru fiecare exploatare.
+Calculăm deviația standard a acestor capacități. O deviație standard mai mică indică o distribuție mai echilibrată.
+Fitness-ul este invers proporțional cu deviația standard.
+Populația Inițială
+Generăm o populație de dimensiune constantă dim de alocări aleatoare a navelor la exploatări.
+
+Operatorii de Variație
+Recombinare
+
+Vom folosi recombinare uniformă pentru a genera noi soluții, cu probabilitatea de recombinare pc = 0.8.
+Mutație
+
+Vom folosi mutația prin schimbarea aleatorie a alocării unei nave, cu probabilitatea de mutație pm = 0.2.
+Selecția Părinților și a Generației Următoare
+Selecția Părinților
+
+Folosim mecanismul Stochastic Universal Sampling (SUS) cu distribuție de probabilitate FPS (Fitness Proportionate Selection).
+Selecția Generației Următoare
+
+Model generațional cu elitism.
+Condiția de Terminare și Soluția
+Algoritmul se finalizează dacă:
+
+S-au realizat NMAX iterații.
+Variabilitatea populației este 0 (toți indivizii au aceeași calitate).
+A fost generat un individ care respectă toate constrângerile și are fitness maxim.
+Soluția problemei va fi dată de individul cu cea mai bună calitate din ultima generație.

@@ -1,0 +1,42 @@
+O universitate organizează o expediție științifică pentru vizitarea unor insule virgine din arhipelagul X, cu plecare și revenire în același port. Nava nu poate fi reaprovizionată, iar resursele disponibile permit vizitarea a n insule din cele 1.000 disponibile și parcurgerea unei distanțe totale de maxim k kilometri. Este preferată vizitarea unor insule aflate la distanțe cât mai mari. Distanțele între insule (inclusiv portul de plecare) sunt preluate sub forma unei matrice de ponderi dintr-un fișier text, unde D(i,j) = distanța între insula i și insula j.
+
+2. Obiectiv
+Alegerea insulelor vizitate și ordinea de vizitare astfel încât să fie respectate constrângerile de resurse și distanță totală, maximizând distanțele între insulele vizitate.
+
+3. Reprezentarea Soluțiilor
+Un candidat la soluție este un vector de lungime n+1, unde primele n elemente reprezintă insulele vizitate, iar ultimul element reprezintă fitness-ul soluției:
+
+X=[x1,x2,...,xn,fitness]
+
+  reprezintă indexul insulei vizitate.
+4. Funcția Fitness
+Calitatea unui individ este determinată de distanțele parcurse între insulele vizitate, asigurându-se că distanța totală nu depășește k.
+
+Calculăm distanța totală parcursă.
+Verificăm dacă distanța totală depășește k.
+Calculăm suma distanțelor între insulele vizitate.
+Dacă soluția respectă constrângerile, fitness-ul este suma distanțelor, altfel fitness-ul este penalizat.
+5. Populația Inițială
+Generăm o populație de dimensiune constantă dim de vectori aleatori de insule, care reprezintă ordinea de vizitare.
+
+6. Operatorii de Variație
+Recombinare
+
+Vom folosi recombinare PMX (Partially Mapped Crossover) pentru a genera noi soluții, cu probabilitatea de recombinare pc = 0.8.
+Mutație
+
+Vom folosi mutația prin inversarea ordinii unei subsecvențe aleatoare de insule, cu probabilitatea de mutație pm = 0.2.
+7. Selecția Părinților și a Generației Următoare
+Selecția Părinților
+
+Folosim mecanismul Stochastic Universal Sampling (SUS) cu distribuție de probabilitate FPS (Fitness Proportionate Selection).
+Selecția Generației Următoare
+
+Model generațional cu elitism.
+8. Condiția de Terminare și Soluția
+Algoritmul se finalizează dacă:
+
+S-au realizat NMAX iterații.
+Variabilitatea populației este 0 (toți indivizii au aceeași calitate).
+A fost generat un individ care respectă toate constrângerile și are fitness maxim.
+Soluția problemei va fi dată de individul cu cea mai bună calitate din ultima generație.

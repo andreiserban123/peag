@@ -1,0 +1,36 @@
+1. Cerința
+   O companie dorește să creeze 3 depozite de distribuție pe 3 insule diferite dintre cele n insule din arhipelagul X. Distanțele între fiecare două insule sunt date sub forma unei matrice de ponderi D(i,j), unde D(i,j) este distanța între insula i și insula j. Scopul este de a minimiza distanța totală de la fiecare insulă la depozitul cel mai apropiat.
+
+2. Obiectiv
+   Alegerea a 3 insule pentru amplasarea depozitelor astfel încât să fie minimizată distanța totală de la fiecare insulă la depozitul cel mai apropiat.
+
+3. Reprezentarea Soluțiilor
+   Un candidat la soluție este un vector de lungime 4, unde primele 3 elemente reprezintă indexurile insulelor alese pentru depozite, iar ultimul element reprezintă fitness-ul soluției:
+   X = [d1, d2, d3, fitness]
+
+4. Funcția Fitness
+   Calitatea unui individ este determinată de suma distanțelor de la fiecare insulă la depozitul cel mai apropiat.
+   1. Pentru fiecare insulă, calculăm distanța minimă la unul dintre cele 3 depozite.
+   2. Suma acestor distanțe minime reprezintă valoarea fitness-ului.
+
+5. Populația Inițială
+   Generăm o populație de dimensiune constantă dim de vectori aleatori de insule, care reprezintă indexurile insulelor alese pentru depozite.
+
+6. Operatorii de Variație
+   1. Recombinare
+      Vom folosi recombinare uniformă pentru a genera noi soluții, cu probabilitatea de recombinare pc = 0.8.
+   2. Mutație
+      Vom folosi mutația prin schimbarea aleatorie a unuia dintre cele 3 depozite, cu probabilitatea de mutație pm = 0.2.
+
+7. Selecția Părinților și a Generației Următoare
+   1. Selecția Părinților
+      Folosim mecanismul Stochastic Universal Sampling (SUS) cu distribuție de probabilitate FPS (Fitness Proportionate Selection).
+   2. Selecția Generației Următoare
+      Model generațional cu elitism.
+
+8. Condiția de Terminare și Soluția
+   Algoritmul se finalizează dacă:
+   1. S-au realizat NMAX iterații.
+   2. Variabilitatea populației este 0 (toți indivizii au aceeași calitate).
+   3. A fost generat un individ care respectă toate constrângerile și are fitness maxim.
+   Soluția problemei va fi dată de individul cu cea mai bună calitate din ultima generație.

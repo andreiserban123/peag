@@ -1,0 +1,51 @@
+Cerința
+O fabrică ambalează fructe deshidratate în pachete de câte 200g pentru distribuție către magazine. Materiile prime utilizate sunt: smochine, ananas, curmale, merișor. Cantitățile disponibile din fiecare materie primă sunt, în ordine: 100, 80, 120, 50 (kilograme). Fabrica ambalează următoarele combinații:
+
+Combinația 1: 30% smochine, 25% ananas, 25% curmale, 20% merișor;
+Combinația 2: 75% curmale, 25% smochine;
+Combinația 3: 25% smochine, 25% ananas, 25% curmale, 25% merișor;
+Combinația 4: 100% curmale;
+Combinația 5: 100% smochine;
+Profiturile aduse de fiecare combinație sunt, în ordine: 20, 10, 15, 12, 5 unități pe pachet.
+
+Obiectiv
+Determinați cantitățile din fiecare combinație care trebuie produse pentru a maximiza profitul, utilizând un algoritm genetic.
+
+Reprezentarea Soluțiilor
+Un candidat la soluție este un vector de lungime 6, unde primele 5 elemente reprezintă numărul de pachete produse pentru fiecare combinație, iar ultimul element reprezintă fitness-ul soluției:
+
+X=[x1,x2,x3,x4,x5,fitness]
+
+Funcția Fitness
+Calitatea unui individ este determinată de profitul total și de respectarea constrângerilor de cantități disponibile din fiecare materie primă.
+
+Formula pentru fitness:
+
+Calculăm cantitățile utilizate din fiecare materie primă.
+Verificăm dacă cantitățile utilizate depășesc cantitățile disponibile.
+Calculăm profitul total.
+Dacă soluția respectă constrângerile, fitness-ul este profitul total, altfel fitness-ul este penalizat.
+Populația Inițială
+Generăm o populație de dimensiune constantă dim de vectori aleatori de numere întregi, care reprezintă numărul de pachete produse din fiecare combinație.
+
+Operatorii de Variație
+Recombinare
+
+Vom folosi recombinare uniformă pentru a genera noi soluții, cu probabilitatea de recombinare pc = 0.8.
+Mutație
+
+Vom folosi mutația prin schimbarea aleatorie a numărului de pachete produse, cu probabilitatea de mutație pm = 0.2.
+Selecția Părinților și a Generației Următoare
+Selecția Părinților
+
+Folosim mecanismul Stochastic Universal Sampling (SUS) cu distribuție de probabilitate FPS (Fitness Proportionate Selection).
+Selecția Generației Următoare
+
+Model generațional cu elitism.
+Condiția de Terminare și Soluția
+Algoritmul se finalizează dacă:
+
+S-au realizat NMAX iterații.
+Variabilitatea populației este 0 (toți indivizii au aceeași calitate).
+A fost generat un individ care respectă toate constrângerile și are fitness maxim.
+Soluția problemei va fi dată de individul cu cea mai bună calitate din ultima generație.
